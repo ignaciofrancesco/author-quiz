@@ -1,6 +1,6 @@
 import logo from './logo.svg';
-import './App.css';
 import './bootstrap.min.css';
+import './App.css';
 import PropTypes from 'prop-types';
 
 // HEADER
@@ -15,15 +15,24 @@ function Hero(){
   );
 }
 
+function Book({title}){
+  return (
+    <div className="answer">
+      <h4>{title}</h4>
+    </div>
+  );
+}
+
 // CENTRAL BEHAVIOUR
+// we need to provide a unique "key" for each element when we use a collection to create a list.
 function Turn({author, books}){
   return(
     <div className="row turn" style={{ backgroundColor: "white" }}>
       <div className="col-4 offset-1">
-        <img src={author.imageURL} className="authorimage" alt="author"/>
+        <img src={author.imageUrl} className="authorimage" alt="author"/>
       </div>
       <div className="col-6">
-        {books.map((title) => <p>{title}</p>)}
+        {books.map((title) => <Book title={title} key={title} />)}
       </div>
     </div>
   );

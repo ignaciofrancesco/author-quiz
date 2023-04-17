@@ -1,29 +1,98 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import './index.css';
 import AuthorQuiz from './AuthorQuiz';
 import reportWebVitals from './reportWebVitals';
 import PropTypes from 'prop-types';
 import * as _ from 'underscore';
+import {shuffle, sample} from 'underscore';
 
 // DATABASE
 // array of authors (object)
 const authors = [
   {
     name: 'Mark Twain',
-    imageURL: 'images/authors/marktwain.jpg',
-    imageSource: 'Wikipedia',
+    imageUrl: 'images/authors/marktwain.jpg',
+    imageSource: 'Wikimedia Commons',
     books: ['The Adventures of Huckleberry Finn']
+  },
+  {
+    name: 'Joseph Conrad',
+    imageUrl: 'images/authors/josephconrad.png',
+    imageSource: 'Wikimedia Commons',
+    books: ['Heart of Darkness']
+  },
+  {
+    name: 'J.K. Rowling',
+    imageUrl: 'images/authors/jkrowling.jpg',
+    imageSource: 'Wikimedia Commons',
+    imageAttribution: 'Daniel Ogren',
+    books: ['Harry Potter and the Sorcerers Stone']
+  },
+  {
+    name: 'Stephen King',
+    imageUrl: 'images/authors/stephenking.jpg',
+    imageSource: 'Wikimedia Commons',
+    imageAttribution: 'Pinguino',
+    books: ['The Shining', 'IT']
+  },
+  {
+    name: 'Charles Dickens',
+    imageUrl: 'images/authors/charlesdickens.jpg',
+    imageSource: 'Wikimedia Commons',
+    books: ['David Copperfield', 'A Tale of Two Cities']
+  },
+  {
+    name: 'William Shakespeare',
+    imageUrl: 'images/authors/williamshakespeare.jpg',
+    imageSource: 'Wikimedia Commons',
+    books: ['Hamlet', 'Macbeth', 'Romeo and Juliet']
   }
 ];
 
 // MODEL DATA
+// This is the data that is passed through to the Turn component each time to render a new turn in the game.
+// To generate the data, we call the function getTurnData each time, passing in the authors array.
+// It returns an object with 4 random books, and one author.
 const state = {
-  turnData:  {
-      author: authors[0],
-      books: authors[0].books
-  }
+  turnData:  getTurnData(authors)
 };
+
+// FUNCTIONS DEFINITION
+
+function getTurnData() {
+
+  let answerBook = "";
+
+  // gets all of the books
+  const allBooks = authors.reduce(
+    (accumulatedBooks, currentAuthor) => {
+      return accumulatedBooks.concat(currentAuthor.books);
+    },
+    [] // initial value for accumulating all of the books for each author in an array
+  );
+
+  // shuffles books
+  const shuffledBooks = shuffle(allBooks);
+
+  // selects the first 4 books
+  const firstFourBooks = shuffledBooks.slice(0, 4);
+
+  // selects the book that is gonna be the answer
+  answerBook = sample(firstFourBooks);
+
+  // finds the author of the book
+  const selectedAuthor = authors.find(
+    (author) => {
+      return author.books.includes(answerBook);
+    }
+  );
+
+  return {
+    author: selectedAuthor,
+    books: firstFourBooks
+  }
+}
 
 // RENDERING THE APP
 const root = ReactDOM.createRoot(document.getElementById('root'));
