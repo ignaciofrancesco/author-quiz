@@ -6,10 +6,40 @@ import reportWebVitals from './reportWebVitals';
 import PropTypes from 'prop-types';
 import * as _ from 'underscore';
 
+// DATABASE
+// array of authors (object)
+const authors = [
+  {
+    name: 'Mark Twain',
+    imageURL: 'images/authors/marktwain.jpg',
+    imageSource: 'Wikipedia',
+    books: ['The Adventures of Huckleberry Finn']
+  }
+];
+
+// MODEL DATA
+const state = {
+  turnData:  {
+      author: authors[0],
+      books: authors[0].books
+  }
+};
+
+// RENDERING THE APP
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+root.render(
+  <React.StrictMode>
+    <AuthorQuiz {...state} />
+  </React.StrictMode>
+);
+ 
 
 
 
 
+
+/* 
 // CONDITIONAL DISPLAY EXAMPLE
 
 function Sum(props) {
@@ -56,7 +86,7 @@ setInterval(() => {
             1000
 );
  
-
+ */
 /* 
 
 // CLICKY BUTTONS EXAMPLE
@@ -129,18 +159,6 @@ ReactDOM.render(element,
   document.getElementById('root')
 );
  */
-
-
-// AUTHOR QUIZ CODE
-/* const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <AuthorQuiz />
-  </React.StrictMode>
-);
- */
-
-
 
 
 // If you want to start measuring performance in your app, pass a function
