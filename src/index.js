@@ -55,13 +55,17 @@ const authors = [
 // To generate the data, we call the function getTurnData each time, passing in the authors array.
 // It returns an object with 4 random books, and one author.
 const state = {
-  turnData:  getTurnData(authors)
+  turnData:  getTurnData(authors),
+  answerState: ""
 };
+
 
 // FUNCTIONS DEFINITION
 
+// gets the data for the current turn
 function getTurnData() {
 
+  // initialize the answer as empty
   let answerBook = "";
 
   // gets all of the books
@@ -94,14 +98,42 @@ function getTurnData() {
   }
 }
 
+// handles a selected answer
+function onAnswerSelected(answer){
+
+  // see if it is correct
+
+  console.log(answer);
+  let isCorrect = state.turnData.author.books.some( book => book === answer );
+console.log(isCorrect);
+  // change state
+  if (isCorrect) {
+    state.answerState = "correct";
+  }
+  else {
+    state.answerState = "wrong";
+  }
+
+  // rerender
+  render();
+  return;
+}
+
+function render(){
+  root.render(
+    <React.StrictMode>
+      <AuthorQuiz {...state} onAnswerSelected={onAnswerSelected} />
+    </React.StrictMode>
+  );
+  return;
+}
+
 // RENDERING THE APP
 const root = ReactDOM.createRoot(document.getElementById('root'));
+render();
 
-root.render(
-  <React.StrictMode>
-    <AuthorQuiz {...state} />
-  </React.StrictMode>
-);
+
+
  
 
 

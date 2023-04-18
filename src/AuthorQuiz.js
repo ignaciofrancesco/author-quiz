@@ -15,31 +15,52 @@ function Hero(){
   );
 }
 
-function Book({title}){
+function Book({title, onClick}){
   return (
-    <div className="answer">
+    <div className="answer" onClick={ (syntheticEvent) => onClick(title) }>
       <h4>{title}</h4>
     </div>
   );
 }
 
-// CENTRAL BEHAVIOUR
+// THE TURN ITSELF
 // we need to provide a unique "key" for each element when we use a collection to create a list.
-function Turn({author, books}){
+function Turn({author, books, answerState, onAnswerSelected}){
+
+  function answerStateToBgColor(answerState) {
+
+    // maps the answer state to the right color
+    const bgColor = {
+      "": "none",
+      "correct": "green",
+      "wrong": "red"
+    };
+
+    return bgColor[answerState];
+  }
+
   return(
-    <div className="row turn" style={{ backgroundColor: "white" }}>
+    <div className="row turn" style={{ backgroundColor: answerStateToBgColor(answerState) }}>
       <div className="col-4 offset-1">
         <img src={author.imageUrl} className="authorimage" alt="author"/>
       </div>
       <div className="col-6">
-        {books.map((title) => <Book title={title} key={title} />)}
+        {books.map((title) => <Book title={title} key={title} onClick={onAnswerSelected} />)}
       </div>
     </div>
   );
 }
 Turn.propTypes = {
-  author: PropTypes.object.isRequired,
-  books: PropTypes.array.isRequired
+  author: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    imageUrl: PropTypes.string.isRequired,
+    imageSource: PropTypes.string.isRequired,
+    imageAttribution: PropTypes.string.isRequired,
+    books: PropTypes.arrayOf(PropTypes.string).isRequired
+  }),
+  books: PropTypes.arrayOf(PropTypes.string).isRequired,
+  answerState: PropTypes.string.isRequired,
+  onAnswerSelected: PropTypes.func.isRequired
 };
 
 // BUTTON TO CONTINUE
@@ -60,12 +81,12 @@ function Footer(){
 }
 
 // THE MAIN COMPONENT
-function AuthorQuiz({turnData}) {
+function AuthorQuiz({turnData, answerState, onAnswerSelected}) {
   return (
       <div className="fluid-container">
 
           <Hero />
-          <Turn {...turnData}/>
+          <Turn {...turnData} answerState={answerState} onAnswerSelected={onAnswerSelected}/>
           <Continue />
           <Footer />
 
