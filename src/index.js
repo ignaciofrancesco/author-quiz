@@ -1,11 +1,24 @@
+import './index.css';
+
+// for basic react components
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import AuthorQuiz from './AuthorQuiz';
-import reportWebVitals from './reportWebVitals';
+
+// for validating props
 import PropTypes from 'prop-types';
+
+// for main app component
+import AuthorQuiz from './AuthorQuiz';
+
+// for client-side routing
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+
+// misc
+import reportWebVitals from './reportWebVitals';
+
+// utilities
 import * as _ from 'underscore';
-import {shuffle, sample} from 'underscore';
+import { shuffle, sample } from 'underscore';
 
 // DATABASE
 // array of authors (object)
@@ -59,8 +72,47 @@ const state = {
   answerState: ""
 };
 
+// "ELEMENTS" TO BE RENDERED WHEN ROUTED
 
-// FUNCTIONS DEFINITION
+function App() {
+  return(
+    <AuthorQuiz {...state} onAnswerSelected={onAnswerSelected} />
+  );
+}
+
+function AddNewAuthor({params}){
+  return(
+    <div>
+      <h2>
+        Add new author
+      </h2>
+      <p>{JSON.stringify(params)}</p>
+    </div>
+  );
+}
+
+// RENDERING THE APP
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+render();
+
+
+// FUNCTIONS DEFINITION      
+
+// routes and renders "elements" according to the current URL
+function render(){
+  root.render(
+    <React.StrictMode>
+      <BrowserRouter>
+        <Routes>
+          <Route exact path="/" element={ <App /> } />
+          <Route path="/add-new-author" element={ <AddNewAuthor /> } />
+        </Routes>
+      </BrowserRouter>
+    </React.StrictMode>
+  );
+  return;
+}
 
 // gets the data for the current turn
 function getTurnData() {
@@ -119,22 +171,7 @@ console.log(isCorrect);
   return;
 }
 
-function render(){
-  root.render(
-    <React.StrictMode>
-      <AuthorQuiz {...state} onAnswerSelected={onAnswerSelected} />
-    </React.StrictMode>
-  );
-  return;
-}
 
-// RENDERING THE APP
-const root = ReactDOM.createRoot(document.getElementById('root'));
-render();
-
-
-
- 
 
 
 

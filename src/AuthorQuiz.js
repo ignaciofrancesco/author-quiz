@@ -1,7 +1,7 @@
-import logo from './logo.svg';
 import './bootstrap.min.css';
 import './App.css';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 // HEADER
 function Hero(){
@@ -88,6 +88,7 @@ function AuthorQuiz({turnData, answerState, onAnswerSelected}) {
           <Hero />
           <Turn {...turnData} answerState={answerState} onAnswerSelected={onAnswerSelected}/>
           <Continue />
+          <p><Link to="/add-new-author">Add new author</Link></p>
           <Footer />
 
       </div>
