@@ -64,8 +64,18 @@ Turn.propTypes = {
 };
 
 // BUTTON TO CONTINUE
-function Continue(){
-
+function Continue({ show, onContinue }){
+  return(
+    <div className="row continue">
+      {
+        show ?
+        <div className="col-11">
+            <button className="btn btn-primary btn-lg float-end" value="Continue" onClick={onContinue}>Continue</button>
+        </div>
+        : null
+      }
+    </div>
+  );
 }
 
 // FOOTER
@@ -81,13 +91,13 @@ function Footer(){
 }
 
 // THE MAIN COMPONENT
-function AuthorQuiz({turnData, answerState, onAnswerSelected}) {
+function AuthorQuiz({turnData, answerState, onAnswerSelected, onContinue}) {
   return (
       <div className="fluid-container">
 
           <Hero />
           <Turn {...turnData} answerState={answerState} onAnswerSelected={onAnswerSelected}/>
-          <Continue />
+          <Continue show={answerState === "correct"} onContinue={onContinue}/>
           <p><Link to="/add-new-author">Add new author</Link></p>
           <Footer />
 

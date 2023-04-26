@@ -7,11 +7,12 @@ import ReactDOM from 'react-dom/client';
 // for validating props
 import PropTypes from 'prop-types';
 
-// for main app component
+// my components
 import AuthorQuiz from './AuthorQuiz';
+import AddNewAuthor from './AddNewAuthor';
 
 // for client-side routing
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
 
 // misc
 import reportWebVitals from './reportWebVitals';
@@ -67,51 +68,57 @@ const authors = [
 // This is the data that is passed through to the Turn component each time to render a new turn in the game.
 // To generate the data, we call the function getTurnData each time, passing in the authors array.
 // It returns an object with 4 random books, and one author.
-const state = {
-  turnData:  getTurnData(authors),
-  answerState: ""
-};
-
-// "ELEMENTS" TO BE RENDERED WHEN ROUTED
-
-function App() {
-  return(
-    <AuthorQuiz {...state} onAnswerSelected={onAnswerSelected} />
-  );
+function resetState() {
+  return {
+    turnData:  getTurnData(authors),
+    answerState: ""
+  };
 }
 
-function AddNewAuthor({params}){
-  return(
-    <div>
-      <h2>
-        Add new author
-      </h2>
-      <p>{JSON.stringify(params)}</p>
-    </div>
-  );
-}
+let state = resetState();
 
 // RENDERING THE APP
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 render();
 
+// WRAPPER COMPONENTS
+
+// uses a wrapper to be able to use navigation
+function AuthorWrapper () {
+  // hook that gives access to navigation
+  let navigate = useNavigate();
+  return(
+      <AddNewAuthor onAddAuthor={ author => {
+            authors.push(author);
+            navigate("/");
+          }
+        }
+      />
+  );
+}
 
 // FUNCTIONS DEFINITION      
 
-// routes and renders "elements" according to the current URL
+// routing and rendering
 function render(){
   root.render(
     <React.StrictMode>
       <BrowserRouter>
         <Routes>
-          <Route exact path="/" element={ <App /> } />
-          <Route path="/add-new-author" element={ <AddNewAuthor /> } />
+          <Route exact path="/" element={ <AuthorQuiz {...state} onAnswerSelected={onAnswerSelected} onContinue={onContinue} /> } />
+          <Route path="/add-new-author" element={ <AuthorWrapper /> } />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>
   );
   return;
+}
+
+// continues to next turn
+function onContinue() {
+  state = resetState();
+  render();
 }
 
 // gets the data for the current turn
@@ -155,9 +162,8 @@ function onAnswerSelected(answer){
 
   // see if it is correct
 
-  console.log(answer);
   let isCorrect = state.turnData.author.books.some( book => book === answer );
-console.log(isCorrect);
+
   // change state
   if (isCorrect) {
     state.answerState = "correct";
